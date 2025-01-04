@@ -1,0 +1,700 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="MKK2">MKK2</option>
+                                
+                                    <option value="SIGNAL TRANSDUCTION PATHWAY INVOLVING PKC1, BCK1, AND MPK1">SIGNAL TRANSDUCTION PATHWAY INVOLVING PKC1, BCK1, AND MPK1</option>
+                                
+                                    <option value="SUPPRESSES DEFECT OF MKK1 MKK2 DOUBLE MUTANT">SUPPRESSES DEFECT OF MKK1 MKK2 DOUBLE MUTANT</option>
+                                
+                                    <option value="DEFECT OF MKK1 MKK2 DOUBLE DISRUPTION">DEFECT OF MKK1 MKK2 DOUBLE DISRUPTION</option>
+                                
+                                    <option value="MEKS">MEKS</option>
+                                
+                                    <option value="BETWEEN BCK1 AND MPK1">BETWEEN BCK1 AND MPK1</option>
+                                
+                                    <option value="GROWTH DEFECT CAUSED BY DELETION OF BCK1">GROWTH DEFECT CAUSED BY DELETION OF BCK1</option>
+                                
+                                    <option value="MEK">MEK</option>
+                                
+                                    <option value="MKK1">MKK1</option>
+                                
+                                    <option value="MAINTAINING INTEGRITY">MAINTAINING INTEGRITY</option>
+                                
+                                    <option value="PKC1">PKC1</option>
+                                
+                                    <option value="MAP KINASE CASCADE">MAP KINASE CASCADE</option>
+                                
+                                    <option value="SER(P)-2">SER(P)-2</option>
+                                
+                                    <option value="CESA4">CESA4</option>
+                                
+                                    <option value="XMEK2">XMEK2</option>
+                                
+                                    <option value="MPK1 ACTIVATION">MPK1 ACTIVATION</option>
+                                
+                                    <option value="STE7 PRODUCT OF S.CEREVISIAE">STE7 PRODUCT OF S.CEREVISIAE</option>
+                                
+                                    <option value="BYR1 PRODUCT OF SCHIZOSACCHAROMYCES POMBE">BYR1 PRODUCT OF SCHIZOSACCHAROMYCES POMBE</option>
+                                
+                                    <option value="VERTEBRATE MAP KINASE-KINASES">VERTEBRATE MAP KINASE-KINASES</option>
+                                
+                                    <option value="PATHWAY MEDIATED BY PROTEIN KINASE C">PATHWAY MEDIATED BY PROTEIN KINASE C</option>
+                                
+                                    <option value="PKC1P">PKC1P</option>
+                                
+                                    <option value="SLT2 (MPK1)">SLT2 (MPK1)</option>
+                                
+                                    <option value="AUTOPHAGY OF PROTEASOMES">AUTOPHAGY OF PROTEASOMES</option>
+                                
+                                    <option value="PHENOTYPIC TRAITS CAUSED BY PTC1 DELETION">PHENOTYPIC TRAITS CAUSED BY PTC1 DELETION</option>
+                                
+                                    <option value="SLT2">SLT2</option>
+                                
+                                    <option value="SER50 IN MKK2">SER50 IN MKK2</option>
+                                
+                                    <option value="OF TEMPERATURE-SENSITIVE PKC1 MUTANT">OF TEMPERATURE-SENSITIVE PKC1 MUTANT</option>
+                                
+                                    <option value="UPREGULATED EXPRESSION OF STRESS-INDUCED MARKER GENES">UPREGULATED EXPRESSION OF STRESS-INDUCED MARKER GENES</option>
+                                
+                                    <option value="STE7">STE7</option>
+                                
+                                    <option value="CONSTITUTIVE MPK4 AND MPK6 ACTIVITY">CONSTITUTIVE MPK4 AND MPK6 ACTIVITY</option>
+                                
+                                    <option value="SALT STRESS">SALT STRESS</option>
+                                
+                                    <option value="COLD STRESS">COLD STRESS</option>
+                                
+                                    <option value="MPK6">MPK6</option>
+                                
+                                    <option value="MPK4">MPK4</option>
+                                
+                                    <option value="MPK5">MPK5</option>
+                                
+                                    <option value="INCREASED FREEZING AND SALT TOLERANCE">INCREASED FREEZING AND SALT TOLERANCE</option>
+                                
+                                    <option value="SEVERE PHENOTYPES">SEVERE PHENOTYPES</option>
+                                
+                                    <option value="XOPAU">XOPAU</option>
+                                
+                                    <option value="MEKK1">MEKK1</option>
+                                
+                                    <option value="H2O2 AND ELICITORS">H2O2 AND ELICITORS</option>
+                                
+                                    <option value="HEAT STRESS">HEAT STRESS</option>
+                                
+                                    <option value="HYDROGEN PEROXIDE">HYDROGEN PEROXIDE</option>
+                                
+                                    <option value="FLG22">FLG22</option>
+                                
+                                    <option value="RAV1">RAV1</option>
+                                
+                                    <option value="152 GENES">152 GENES</option>
+                                
+                                    <option value="LAMINARIN">LAMINARIN</option>
+                                
+                                    <option value="FREEZING TOLERANCE">FREEZING TOLERANCE</option>
+                                
+                                    <option value="SALT STRESS TOLERANCE">SALT STRESS TOLERANCE</option>
+                                
+                                    <option value="GERMINATION ON SALT-CONTAINING MEDIA">GERMINATION ON SALT-CONTAINING MEDIA</option>
+                                
+                                    <option value="STZ">STZ</option>
+                                
+                                    <option value="CBF2">CBF2</option>
+                                
+                                    <option value="ACS6">ACS6</option>
+                                
+                                    <option value="CBF3">CBF3</option>
+                                
+                                    <option value="FAD8">FAD8</option>
+                                
+                                    <option value="P5CS">P5CS</option>
+                                
+                                    <option value="CELL DEATH CAUSED BY HRPP">CELL DEATH CAUSED BY HRPP</option>
+                                
+                                    <option value="HRPP1-101">HRPP1-101</option>
+                                
+                                    <option value="HRPP-MEDIATED INDUCTION OF PR1A AND NPR1">HRPP-MEDIATED INDUCTION OF PR1A AND NPR1</option>
+                                
+                                    <option value="Y192">Y192</option>
+                                
+                                    <option value="HRPP-TRIGGERED CELL DEATH COMPLETELY">HRPP-TRIGGERED CELL DEATH COMPLETELY</option>
+                                
+                                    <option value="HRPP1-119">HRPP1-119</option>
+                                
+                                    <option value="SA SIGNALING">SA SIGNALING</option>
+                                
+                                    <option value="TRANSCRIPT ACCUMULATION OF HIN1">TRANSCRIPT ACCUMULATION OF HIN1</option>
+                                
+                                    <option value="TRANSCRIPT ACCUMULATION OF HSR203J">TRANSCRIPT ACCUMULATION OF HSR203J</option>
+                                
+                                    <option value="SLT2 VIA PROCESSIVE MECHANISM">SLT2 VIA PROCESSIVE MECHANISM</option>
+                                
+                                    <option value="NO PHENOTYPIC DEFECTS">NO PHENOTYPIC DEFECTS</option>
+                                
+                                    <option value="PROTEIN KINASE SIMILAR TO STE7">PROTEIN KINASE SIMILAR TO STE7</option>
+                                
+                                    <option value="CELL LYSIS DEFECT OF PKC1 MUTANT">CELL LYSIS DEFECT OF PKC1 MUTANT</option>
+                                
+                                    <option value="STIMULATION OF MPK1 ACTIVITY">STIMULATION OF MPK1 ACTIVITY</option>
+                                
+                                    <option value="RCK1">RCK1</option>
+                                
+                                    <option value="RCK1 DELETION">RCK1 DELETION</option>
+                                
+                                    <option value="MITOGEN-ACTIVATED PROTEIN KINASE KINASE HOMOLOGS">MITOGEN-ACTIVATED PROTEIN KINASE KINASE HOMOLOGS</option>
+                                
+                                    <option value="PHENOTYPIC TRAITS">PHENOTYPIC TRAITS</option>
+                                
+                                    <option value="Y192 IN SLT2">Y192 IN SLT2</option>
+                                
+                                    <option value="RLM1">RLM1</option>
+                                
+                                    <option value="BCK1">BCK1</option>
+                                
+                                    <option value="BYR1 PRODUCT">BYR1 PRODUCT</option>
+                                
+                                    <option value="STE7 PRODUCT">STE7 PRODUCT</option>
+                                
+                                    <option value="PROTEIN KINASES">PROTEIN KINASES</option>
+                                
+                                    <option value="SAC7">SAC7</option>
+                                
+                                    <option value="PLC1">PLC1</option>
+                                
+                                    <option value="SWI6">SWI6</option>
+                                
+                                    <option value="ROM2">ROM2</option>
+                                
+                                    <option value="LRG1">LRG1</option>
+                                
+                                    <option value="FKS1">FKS1</option>
+                                
+                                    <option value="WSC1">WSC1</option>
+                                
+                                    <option value="SWI4">SWI4</option>
+                                
+                                    <option value="MLP2">MLP2</option>
+                                
+                                    <option value="MTL1">MTL1</option>
+                                
+                                    <option value="MID2">MID2</option>
+                                
+                                    <option value="WSC3">WSC3</option>
+                                
+                                    <option value="WSC2">WSC2</option>
+                                
+                                    <option value="MLP1">MLP1</option>
+                                
+                                    <option value="MPK1">MPK1</option>
+                                
+                                    <option value="152 genes">152 genes</option>
+                                
+                                    <option value="RAV1,2">RAV1,2</option>
+                                
+                                    <option value="DREB1C/CBF2">DREB1C/CBF2</option>
+                                
+                                    <option value="WRKY transcription factors">WRKY transcription factors</option>
+                                
+                                    <option value="calmodulins">calmodulins</option>
+                                
+                                    <option value="calcium binding proteins">calcium binding proteins</option>
+                                
+                                    <option value="ERFs">ERFs</option>
+                                
+                                    <option value="MKK5">MKK5</option>
+                                
+                                    <option value="enzymes involved in secondary metabolism">enzymes involved in secondary metabolism</option>
+                                
+                                    <option value="enzymes and targets of ethylene and jasmonate pathways">enzymes and targets of ethylene and jasmonate pathways</option>
+                                
+                                    <option value="factors involved in auxin-regulated gene expression">factors involved in auxin-regulated gene expression</option>
+                                
+                                    <option value="cold and salt stress">cold and salt stress</option>
+                                
+                                    <option value="cold and salt stress sensors">cold and salt stress sensors</option>
+                                
+                                    <option value="set of 152 genes">set of 152 genes</option>
+                                
+                                    <option value="MEKK1-MKK2-MPK4/MPK6">MEKK1-MKK2-MPK4/MPK6</option>
+                                
+                                    <option value="cold stress tolerance">cold stress tolerance</option>
+                                
+                                    <option value="salt stress tolerance">salt stress tolerance</option>
+                                
+                                    <option value="XopAU">XopAU</option>
+                                
+                                    <option value="MKK2ProHindUp">MKK2ProHindUp</option>
+                                
+                                    <option value="MycHindLo">MycHindLo</option>
+                                
+                                    <option value="pGBT9">pGBT9</option>
+                                
+                                    <option value="plant compartments">plant compartments</option>
+                                
+                                    <option value="Slt2">Slt2</option>
+                                
+                                    <option value="new mammalian mitogen-activated protein kinase kinase">new mammalian mitogen-activated protein kinase kinase</option>
+                                
+                                    <option value="S. cerevisiae">S. cerevisiae</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "MKK2", "label": "MKK2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SIGNAL TRANSDUCTION PATHWAY INVOLVING PKC1, BCK1, AND MPK1", "label": "SIGNAL TRANSDUCTION PATHWAY INVOLVING PKC1, BCK1, AND MPK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SUPPRESSES DEFECT OF MKK1 MKK2 DOUBLE MUTANT", "label": "SUPPRESSES DEFECT OF MKK1 MKK2 DOUBLE MUTANT", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "DEFECT OF MKK1 MKK2 DOUBLE DISRUPTION", "label": "DEFECT OF MKK1 MKK2 DOUBLE DISRUPTION", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MEKS", "label": "MEKS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "BETWEEN BCK1 AND MPK1", "label": "BETWEEN BCK1 AND MPK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "GROWTH DEFECT CAUSED BY DELETION OF BCK1", "label": "GROWTH DEFECT CAUSED BY DELETION OF BCK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MEK", "label": "MEK", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MKK1", "label": "MKK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MAINTAINING INTEGRITY", "label": "MAINTAINING INTEGRITY", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PKC1", "label": "PKC1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MAP KINASE CASCADE", "label": "MAP KINASE CASCADE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SER(P)-2", "label": "SER(P)-2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CESA4", "label": "CESA4", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "XMEK2", "label": "XMEK2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MPK1 ACTIVATION", "label": "MPK1 ACTIVATION", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "STE7 PRODUCT OF S.CEREVISIAE", "label": "STE7 PRODUCT OF S.CEREVISIAE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "BYR1 PRODUCT OF SCHIZOSACCHAROMYCES POMBE", "label": "BYR1 PRODUCT OF SCHIZOSACCHAROMYCES POMBE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "VERTEBRATE MAP KINASE-KINASES", "label": "VERTEBRATE MAP KINASE-KINASES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PATHWAY MEDIATED BY PROTEIN KINASE C", "label": "PATHWAY MEDIATED BY PROTEIN KINASE C", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PKC1P", "label": "PKC1P", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SLT2 (MPK1)", "label": "SLT2 (MPK1)", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "AUTOPHAGY OF PROTEASOMES", "label": "AUTOPHAGY OF PROTEASOMES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PHENOTYPIC TRAITS CAUSED BY PTC1 DELETION", "label": "PHENOTYPIC TRAITS CAUSED BY PTC1 DELETION", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SLT2", "label": "SLT2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SER50 IN MKK2", "label": "SER50 IN MKK2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "OF TEMPERATURE-SENSITIVE PKC1 MUTANT", "label": "OF TEMPERATURE-SENSITIVE PKC1 MUTANT", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "UPREGULATED EXPRESSION OF STRESS-INDUCED MARKER GENES", "label": "UPREGULATED EXPRESSION OF STRESS-INDUCED MARKER GENES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "STE7", "label": "STE7", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CONSTITUTIVE MPK4 AND MPK6 ACTIVITY", "label": "CONSTITUTIVE MPK4 AND MPK6 ACTIVITY", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SALT STRESS", "label": "SALT STRESS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "COLD STRESS", "label": "COLD STRESS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MPK6", "label": "MPK6", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MPK4", "label": "MPK4", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MPK5", "label": "MPK5", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "INCREASED FREEZING AND SALT TOLERANCE", "label": "INCREASED FREEZING AND SALT TOLERANCE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SEVERE PHENOTYPES", "label": "SEVERE PHENOTYPES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "XOPAU", "label": "XOPAU", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MEKK1", "label": "MEKK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "H2O2 AND ELICITORS", "label": "H2O2 AND ELICITORS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HEAT STRESS", "label": "HEAT STRESS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HYDROGEN PEROXIDE", "label": "HYDROGEN PEROXIDE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "FLG22", "label": "FLG22", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "RAV1", "label": "RAV1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "152 GENES", "label": "152 GENES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "LAMINARIN", "label": "LAMINARIN", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "FREEZING TOLERANCE", "label": "FREEZING TOLERANCE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SALT STRESS TOLERANCE", "label": "SALT STRESS TOLERANCE", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "GERMINATION ON SALT-CONTAINING MEDIA", "label": "GERMINATION ON SALT-CONTAINING MEDIA", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "STZ", "label": "STZ", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CBF2", "label": "CBF2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "ACS6", "label": "ACS6", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CBF3", "label": "CBF3", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "FAD8", "label": "FAD8", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "P5CS", "label": "P5CS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CELL DEATH CAUSED BY HRPP", "label": "CELL DEATH CAUSED BY HRPP", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HRPP1-101", "label": "HRPP1-101", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HRPP-MEDIATED INDUCTION OF PR1A AND NPR1", "label": "HRPP-MEDIATED INDUCTION OF PR1A AND NPR1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "Y192", "label": "Y192", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HRPP-TRIGGERED CELL DEATH COMPLETELY", "label": "HRPP-TRIGGERED CELL DEATH COMPLETELY", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "HRPP1-119", "label": "HRPP1-119", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SA SIGNALING", "label": "SA SIGNALING", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "TRANSCRIPT ACCUMULATION OF HIN1", "label": "TRANSCRIPT ACCUMULATION OF HIN1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "TRANSCRIPT ACCUMULATION OF HSR203J", "label": "TRANSCRIPT ACCUMULATION OF HSR203J", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SLT2 VIA PROCESSIVE MECHANISM", "label": "SLT2 VIA PROCESSIVE MECHANISM", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "NO PHENOTYPIC DEFECTS", "label": "NO PHENOTYPIC DEFECTS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PROTEIN KINASE SIMILAR TO STE7", "label": "PROTEIN KINASE SIMILAR TO STE7", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "CELL LYSIS DEFECT OF PKC1 MUTANT", "label": "CELL LYSIS DEFECT OF PKC1 MUTANT", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "STIMULATION OF MPK1 ACTIVITY", "label": "STIMULATION OF MPK1 ACTIVITY", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "RCK1", "label": "RCK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "RCK1 DELETION", "label": "RCK1 DELETION", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MITOGEN-ACTIVATED PROTEIN KINASE KINASE HOMOLOGS", "label": "MITOGEN-ACTIVATED PROTEIN KINASE KINASE HOMOLOGS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PHENOTYPIC TRAITS", "label": "PHENOTYPIC TRAITS", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "Y192 IN SLT2", "label": "Y192 IN SLT2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "RLM1", "label": "RLM1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "BCK1", "label": "BCK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "BYR1 PRODUCT", "label": "BYR1 PRODUCT", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "STE7 PRODUCT", "label": "STE7 PRODUCT", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PROTEIN KINASES", "label": "PROTEIN KINASES", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SAC7", "label": "SAC7", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "PLC1", "label": "PLC1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SWI6", "label": "SWI6", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "ROM2", "label": "ROM2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "LRG1", "label": "LRG1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "FKS1", "label": "FKS1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "WSC1", "label": "WSC1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "SWI4", "label": "SWI4", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MLP2", "label": "MLP2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MTL1", "label": "MTL1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MID2", "label": "MID2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "WSC3", "label": "WSC3", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "WSC2", "label": "WSC2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MLP1", "label": "MLP1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MPK1", "label": "MPK1", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "152 genes", "label": "152 genes", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "RAV1,2", "label": "RAV1,2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "DREB1C/CBF2", "label": "DREB1C/CBF2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "WRKY transcription factors", "label": "WRKY transcription factors", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "calmodulins", "label": "calmodulins", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "calcium binding proteins", "label": "calcium binding proteins", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "ERFs", "label": "ERFs", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MKK5", "label": "MKK5", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "enzymes involved in secondary metabolism", "label": "enzymes involved in secondary metabolism", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "enzymes and targets of ethylene and jasmonate pathways", "label": "enzymes and targets of ethylene and jasmonate pathways", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "factors involved in auxin-regulated gene expression", "label": "factors involved in auxin-regulated gene expression", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "cold and salt stress", "label": "cold and salt stress", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "cold and salt stress sensors", "label": "cold and salt stress sensors", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "set of 152 genes", "label": "set of 152 genes", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MEKK1-MKK2-MPK4/MPK6", "label": "MEKK1-MKK2-MPK4/MPK6", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "cold stress tolerance", "label": "cold stress tolerance", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "salt stress tolerance", "label": "salt stress tolerance", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "XopAU", "label": "XopAU", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MKK2ProHindUp", "label": "MKK2ProHindUp", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "MycHindLo", "label": "MycHindLo", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "pGBT9", "label": "pGBT9", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "plant compartments", "label": "plant compartments", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "Slt2", "label": "Slt2", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "new mammalian mitogen-activated protein kinase kinase", "label": "new mammalian mitogen-activated protein kinase kinase", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}, {"color": "#97c2fc", "id": "S. cerevisiae", "label": "S. cerevisiae", "scaling": {"label": false, "max": 1, "min": 1}, "shape": "circle", "shapeProperties": {"useImageSize": false}, "size": 2, "widthConstraint": 100}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "function in", "length": 300, "title": "TITLEABSTRACT", "to": "SIGNAL TRANSDUCTION PATHWAY INVOLVING PKC1, BCK1, AND MPK1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "overexpression", "length": 300, "title": "TITLEABSTRACT", "to": "SUPPRESSES DEFECT OF MKK1 MKK2 DOUBLE MUTANT", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "suppresses", "length": 300, "title": "TITLEABSTRACT", "to": "DEFECT OF MKK1 MKK2 DOUBLE DISRUPTION", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MEKS", "label": "redundant MAP/Erk kinases", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "site of action", "length": 300, "title": "TITLEABSTRACT", "to": "BETWEEN BCK1 AND MPK1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "suppresses", "length": 300, "title": "TITLEABSTRACT", "to": "GROWTH DEFECT CAUSED BY DELETION OF BCK1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "homolog of", "length": 300, "title": "TITLEABSTRACT", "to": "MEK", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK1", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "critical for", "length": 300, "title": "TITLEABSTRACT", "to": "MAINTAINING INTEGRITY", "width": 4}, {"arrows": "to", "color": "#1f1d1d", "from": "PKC1", "label": "activates", "length": 300, "title": "INTRO", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "component of", "length": 300, "title": "FULLTEXT", "to": "MAP KINASE CASCADE", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "SER(P)-2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "interacts with", "length": 300, "title": "TITLEABSTRACT", "to": "CESA4", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "is critical for", "length": 300, "title": "TITLEABSTRACT", "to": "MAINTAINING INTEGRITY", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "XMEK2", "label": "suppresses the growth defect associated with loss of", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MPK1 ACTIVATION", "label": "depends on", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "most similar to", "length": 300, "title": "TITLEABSTRACT", "to": "STE7 PRODUCT OF S.CEREVISIAE", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "most similar to", "length": 300, "title": "TITLEABSTRACT", "to": "BYR1 PRODUCT OF SCHIZOSACCHAROMYCES POMBE", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "most similar to", "length": 300, "title": "TITLEABSTRACT", "to": "VERTEBRATE MAP KINASE-KINASES", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "function in", "length": 300, "title": "TITLEABSTRACT", "to": "PATHWAY MEDIATED BY PROTEIN KINASE C", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "acts sequentially with", "length": 300, "title": "TITLEABSTRACT", "to": "PKC1P", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK1", "label": "acts sequentially with", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "SLT2 (MPK1)", "label": "interacts with", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK1", "label": "redundant in function with", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "plays a role in", "length": 300, "title": "TITLEABSTRACT", "to": "AUTOPHAGY OF PROTEASOMES", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "has less significant effect on", "length": 300, "title": "TITLEABSTRACT", "to": "PHENOTYPIC TRAITS CAUSED BY PTC1 DELETION", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "SLT2", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "SER50 IN MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK1", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "SLT2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "suppresses cell lysis defect", "length": 300, "title": "TITLEABSTRACT", "to": "OF TEMPERATURE-SENSITIVE PKC1 MUTANT", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "overexpression leads to", "length": 300, "title": "FULLTEXT", "to": "UPREGULATED EXPRESSION OF STRESS-INDUCED MARKER GENES", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "replace", "length": 300, "title": "TITLEABSTRACT", "to": "STE7", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "overexpression leads to", "length": 300, "title": "FULLTEXT", "to": "CONSTITUTIVE MPK4 AND MPK6 ACTIVITY", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "activated by", "length": 300, "title": "FULLTEXT", "to": "SALT STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is activated by", "length": 300, "title": "FULLTEXT", "to": "COLD STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is activated by", "length": 300, "title": "FULLTEXT", "to": "SALT STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "FULLTEXT", "to": "MPK4", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MPK5", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "overexpression leads to", "length": 300, "title": "FULLTEXT", "to": "INCREASED FREEZING AND SALT TOLERANCE", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MPK4", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "deletion causes", "length": 300, "title": "TITLEABSTRACT", "to": "SEVERE PHENOTYPES", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "XOPAU", "label": "directly phosphorylates", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MPK6", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates and activates", "length": 300, "title": "FULLTEXT", "to": "MPK4", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MEKK1", "label": "activates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MEKK1", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "responds most strongly to", "length": 300, "title": "FULLTEXT", "to": "H2O2 AND ELICITORS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "activates", "length": 300, "title": "FULLTEXT", "to": "MPK4", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "activates", "length": 300, "title": "FULLTEXT", "to": "MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "targets", "length": 300, "title": "FULLTEXT", "to": "MEKK1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is not activated by", "length": 300, "title": "FULLTEXT", "to": "HEAT STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylates and activates", "length": 300, "title": "FULLTEXT", "to": "MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "activated by", "length": 300, "title": "FULLTEXT", "to": "COLD STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is not activated by", "length": 300, "title": "FULLTEXT", "to": "HYDROGEN PEROXIDE", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is not activated by", "length": 300, "title": "FULLTEXT", "to": "FLG22", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is a key signal transducer of", "length": 300, "title": "FULLTEXT", "to": "SALT STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "RAV1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT", "to": "152 GENES", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is not activated by", "length": 300, "title": "FULLTEXT", "to": "LAMINARIN", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is important for", "length": 300, "title": "FULLTEXT", "to": "FREEZING TOLERANCE", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is important for", "length": 300, "title": "FULLTEXT", "to": "SALT STRESS TOLERANCE", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "activates", "length": 300, "title": "FULLTEXT", "to": "MPK5", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is a key signal transducer of", "length": 300, "title": "FULLTEXT", "to": "COLD STRESS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is important for", "length": 300, "title": "FULLTEXT", "to": "GERMINATION ON SALT-CONTAINING MEDIA", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "STZ", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "CBF2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "ACS6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "CBF3", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "FAD8", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates", "length": 300, "title": "FULLTEXT", "to": "P5CS", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "has no effect on", "length": 300, "title": "TITLEABSTRACT", "to": "CELL DEATH CAUSED BY HRPP", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "HRPP1-101", "label": "does not interact with", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#3a8037", "from": "MKK2", "label": "silencing impairs", "length": 300, "title": "RESULTS", "to": "HRPP-MEDIATED INDUCTION OF PR1A AND NPR1", "width": 4}, {"arrows": "to", "color": "#1f1d1d", "from": "Y192", "label": "phosphorylated by", "length": 300, "title": "INTRO", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#e69f35", "from": "MKK2", "label": "silencing does not block", "length": 300, "title": "DISCUSS", "to": "HRPP-TRIGGERED CELL DEATH COMPLETELY", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "HRPP1-119", "label": "retains ability to interact with", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "silencing compromises", "length": 300, "title": "TITLEABSTRACT", "to": "SA SIGNALING", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "silencing represses", "length": 300, "title": "TITLEABSTRACT", "to": "TRANSCRIPT ACCUMULATION OF HIN1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "does not affect", "length": 300, "title": "TITLEABSTRACT", "to": "TRANSCRIPT ACCUMULATION OF HSR203J", "width": 4}, {"arrows": "to", "color": "#e69f35", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "DISCUSS", "to": "SLT2 VIA PROCESSIVE MECHANISM", "width": 4}, {"arrows": "to", "color": "#e69f35", "from": "SLT2", "label": "binds to", "length": 300, "title": "DISCUSS", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "deletion", "length": 300, "title": "TITLEABSTRACT", "to": "NO PHENOTYPIC DEFECTS", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "encodes", "length": 300, "title": "TITLEABSTRACT", "to": "PROTEIN KINASE SIMILAR TO STE7", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "suppresses", "length": 300, "title": "TITLEABSTRACT", "to": "CELL LYSIS DEFECT OF PKC1 MUTANT", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK1", "label": "is functionally redundant with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is functionally redundant with", "length": 300, "title": "FULLTEXT", "to": "MKK1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "STIMULATION OF MPK1 ACTIVITY", "label": "depends on", "length": 300, "title": "TITLEABSTRACT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "RCK1", "label": "down-regulates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "RCK1 DELETION", "label": "down-regulates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK1", "label": "functionally redundant with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "functionally redundant with", "length": 300, "title": "FULLTEXT", "to": "MKK1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "encode", "length": 300, "title": "FULLTEXT", "to": "MITOGEN-ACTIVATED PROTEIN KINASE KINASE HOMOLOGS", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "has a less significant effect on", "length": 300, "title": "TITLEABSTRACT", "to": "PHENOTYPIC TRAITS", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "transmits signal to", "length": 300, "title": "FULLTEXT", "to": "SLT2", "width": 4}, {"arrows": "to", "color": "#3a8037", "from": "MKK2", "label": "phosphorylates", "length": 300, "title": "RESULTS", "to": "Y192 IN SLT2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK1", "label": "could phosphorylate", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is phosphorylated at Ser50 by", "length": 300, "title": "FULLTEXT", "to": "SLT2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "SLT2", "label": "could phosphorylate", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "could phosphorylate", "length": 300, "title": "FULLTEXT", "to": "MKK1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "RLM1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is phosphorylated by", "length": 300, "title": "FULLTEXT", "to": "SLT2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "SLT2", "label": "retrophosphorylates", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "phosphorylated by", "length": 300, "title": "FULLTEXT", "to": "BCK1", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "can be forced to functionally replace", "length": 300, "title": "TITLEABSTRACT", "to": "STE7", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "similar to", "length": 300, "title": "TITLEABSTRACT", "to": "BYR1 PRODUCT", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "similar to", "length": 300, "title": "TITLEABSTRACT", "to": "VERTEBRATE MAP KINASE-KINASES", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "similar to", "length": 300, "title": "TITLEABSTRACT", "to": "STE7 PRODUCT", "width": 4}, {"arrows": "to", "color": "#ccc", "from": "MKK2", "label": "encodes", "length": 300, "title": "TITLEABSTRACT", "to": "PROTEIN KINASES", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "PKC1", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "BCK1", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "SAC7", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "PLC1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "SWI6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "ROM2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "LRG1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "FKS1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "WSC1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "SWI4", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MLP2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MTL1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MID2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "WSC3", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "WSC2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MLP1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "interacts with", "length": 300, "title": "FULLTEXT", "to": "MPK1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "part of signal transduction module with", "length": 300, "title": "FULLTEXT.TXT", "to": "MPK4", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "part of signal transduction module with", "length": 300, "title": "FULLTEXT.TXT", "to": "MEKK1", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "part of signal transduction module with", "length": 300, "title": "FULLTEXT.TXT", "to": "MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "152 genes", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MPK4", "label": "interacts with", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "RAV1,2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "DREB1C/CBF2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "STZ", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "WRKY transcription factors", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "calmodulins", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "calcium binding proteins", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "ERFs", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK5", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "enzymes involved in secondary metabolism", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "upregulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "enzymes and targets of ethylene and jasmonate pathways", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "downregulates expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "factors involved in auxin-regulated gene expression", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "is a key signal transducer for", "length": 300, "title": "FULLTEXT.TXT", "to": "cold and salt stress", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "modulates cold and salt tolerance through expression of", "length": 300, "title": "FULLTEXT.TXT", "to": "152 genes", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "can be activated by", "length": 300, "title": "FULLTEXT.TXT", "to": "cold and salt stress sensors", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "regulates", "length": 300, "title": "FULLTEXT.TXT", "to": "set of 152 genes", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "mediates stress signaling through a MAPKKK-MAPKK-MAPK module with", "length": 300, "title": "FULLTEXT.TXT", "to": "MEKK1-MKK2-MPK4/MPK6", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "can improve", "length": 300, "title": "FULLTEXT.TXT", "to": "cold stress tolerance", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "can improve", "length": 300, "title": "FULLTEXT.TXT", "to": "salt stress tolerance", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "XopAU", "label": "co-expression with", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2ProHindUp", "label": "associated with", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MycHindLo", "label": "associated with", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "pGBT9", "label": "contains", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "functions in", "length": 300, "title": "FULLTEXT.TXT", "to": "plant compartments", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "are redundant activators", "length": 300, "title": "FULLTEXT.TXT", "to": "Slt2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "new mammalian mitogen-activated protein kinase kinase", "label": "is", "length": 300, "title": "FULLTEXT.TXT", "to": "MKK2", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "encodes MAP kinase-kinase homologs in", "length": 300, "title": "FULLTEXT.TXT", "to": "S. cerevisiae", "width": 4}, {"arrows": "to", "color": "#f07171", "from": "MKK2", "label": "functions in the pathway mediated by", "length": 300, "title": "FULLTEXT.TXT", "to": "PKC1", "width": 4}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+    <script type="text/javascript">
+
+
+        // Adjust edge labels to remain visible along the edges
+        var edges = network.body.data.edges.get();
+        edges.forEach(function(edge) {
+            edge.font = {align: 'top', size: 14};  // Position edge labels in the middle
+        });
+        network.body.data.edges.update(edges);
+    </script>
+    </body>
+</html>
