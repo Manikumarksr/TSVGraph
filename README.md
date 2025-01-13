@@ -14,7 +14,7 @@ Make sure you have the following dependencies installed:
 ## Installation
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/TSVGraph.git
+    git clone https://github.com/Manikumarksr/TSVGraph.git
     cd TSVGraph
     ```
 
